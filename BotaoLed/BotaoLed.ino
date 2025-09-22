@@ -4,6 +4,8 @@
 
 #define BUZZER_PIN 27
 #define LED_ALARME 13
+#define LED_VERDE 33
+#define LED_AMARELO 25
 #define BOTAO_FISICO 26
 #define TRIG_PIN 12
 #define ECHO_PIN 14
@@ -25,6 +27,7 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 // #define pinLed 14 //Pino do LED
 
 AdafruitIO_Feed *botaoalarme = io.feed("botaoalarme");
+AdafruitIO_Feed *distanciaultrassom = io.feed("distanciaultrassom");
 
 bool alarmeAtivo = false;
 unsigned int distancia = 0;
@@ -97,6 +100,11 @@ void loop() {
   Serial.println(distancia);
   Serial.print(" cm");
 
+  if(distancia != 0){
+  // Só envia distancias válidas
+  distanciaultrassom -> save(distancia);
+  }
+
   // ativação ou desativação do alarme
   if(alarmeAtivo && distancia > 0 && distancia < LIMITE_DISTANCIA){
     ativarAlerta();
@@ -105,5 +113,5 @@ void loop() {
     desativarAlerta();
   }
 
-  delay(500);
+  delay(3000);
 }
